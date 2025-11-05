@@ -15,7 +15,9 @@ library(nycflights13)
 
 ```
 1) 
+Use formula Sn = (n)(n+1)(2n+1)/6
 ```{r}
+
 compute_sumsq <- function(n) {
   n * (n+1) * (2*n+1)/6
 }
@@ -66,7 +68,7 @@ print(scrape_bomojo("https://www.boxofficemojo.com/year/2024/"))
 b) 
 ```{r}
 scrape_bomojo2 <- function(year) {
-  url <- paste("https://www.boxofficemojo.com/year/", year)
+  url <- str_c("https://www.boxofficemojo.com/", year, "/")
   page <- read_html(url) 
   movie_table <- page |>
     html_elements("table") |>
@@ -81,7 +83,6 @@ scrape_bomojo2 <- function(year) {
       day = parse_number(release_date))
 
 }
-print(scrape_bomojo2(2003))
 ```
 
 3) Using the datasets from nycflights13, write a function that:
@@ -130,7 +131,7 @@ e) Converts the user supplied variable that uses clock time (e.g., dep_time, arr
 ```{r}
 standardize_time <- function(flights, time_var) {
 flights[[time_var]] <- (flights[[time_var]] %/% 100) + ((flights[[time_var]] %% 100) / 60)
-  flights
+
 }
 e <- flights |> standardize_time("sched_dep_time")
 ```
@@ -151,13 +152,11 @@ Once you have your 1,000 sample means calculated, calculate the 0.025 and 0.975 
 
 ```{r}
 n <- nrow(commute) 
-samples <- 1000
-boot_means <- numeric(samples) 
-set.seed(7787)
-for (i in 1:samples) {
+boot_means <- numeric(1000) 
+for (i in 1:1000) {
   sample <- commute |>
     slice_sample(n =n, replace = TRUE)
-  boot_means[i] <- mean(sample$Time)
+    boot_means[i] <- mean(sample$Time)
 }
 quantile(boot_means, 0.025)
 quantile(boot_means, 0.975)
@@ -182,12 +181,12 @@ y <- numeric(n_steps + 1)
 y[1] <- 0 
 
 for (i in 2:(n_steps + 1)) {
-  coin <- sample(c("heads", "tails"), size =1)
+  coin <- sample(c("heads", "tails"), size = 1)
   if (coin == "heads") {
     step <- 1 }
     else {
       step <- -1 }
-    y[i] <- y[i -1] + step
+    y[i] <- y[i-1] + step
     
 }
 walk_random <- data.frame(Step = x, Position = y) 
